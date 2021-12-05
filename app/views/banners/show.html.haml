@@ -1,0 +1,13 @@
+%p#notice= notice
+.container
+  %p
+    %b Name:
+    = @banner.name
+    %h2 Items
+    %ul
+      - @banner.getItem.each do |item|
+        %li= "name: #{item.name} rate: #{item.rate} rarity: #{item.rarity}"
+
+= link_to 'Edit', edit_banner_path(@banner)
+\|
+= link_to 'Back', banners_path

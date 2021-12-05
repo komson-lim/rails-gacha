@@ -1,0 +1,23 @@
+-# frozen_string_literal: true
+.container
+
+  = simple_form_for @user, url: "/register" do |f|
+    = f.error_notification
+    = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+    .row
+      .col-lg-4.col-md-3
+        %h1.text-lg-end.text-md-center.fw-bold Register
+      .col-lg-4.col-md-6
+        .form-inputs
+          = f.input :username
+          = f.input :password
+          = f.input :confirm_password, inline_label: "Confirm password"
+          = f.hidden_field :credit, value: 1000
+    .row.mt-4
+      .col-lg-4.col-md-3
+      .col-lg-4.col-md-6
+        .form-actions
+          = f.button :submit, class: "btn btn-primary"
+
+        = link_to "Back", "/main"
+ 

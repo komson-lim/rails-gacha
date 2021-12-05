@@ -1,0 +1,19 @@
+%p{id: "alert"}= alert
+.d-flex.justify-content-center.mt-5
+  .row
+    %h1{class: "text-center fw-bold"}Login
+    = simple_form_for @user, url: "/main", method: "post" do |f|
+      = f.error_notification
+      = f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present?
+      .form-inputs
+        .row
+          .col
+            = f.input :username, required: false
+        .row
+          .col
+            = f.input :password, required: false
+      .form-actions
+        .row.mt-4.px-3
+          = f.button :submit, "Login", class: "btn btn-primary btn-block"
+        .row.mt-2.px-3
+          = link_to "Register", "/register", class: "btn btn-secondary btn-block"

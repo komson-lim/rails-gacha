@@ -1,0 +1,14 @@
+%nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb-4
+  .container-fluid
+    %a.navbar-brand{:href => "/banner"} microTwit
+    %button.navbar-toggler{"aria-controls" => "navbarNav", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarNav", "data-bs-toggle" => "collapse", :type => "button"}
+      %span.navbar-toggler-icon
+    #navbarNav.collapse.navbar-collapse
+      %ul.navbar-nav.me-auto.mb-2.mb-lg-0
+        %li.nav-item
+          %a.nav-link.active{:href => "/banner"} banner
+        %li.nav-item
+          %a.nav-link.active{:href => "/users"} user
+        -# %li.nav-item
+        -#   %a.nav-link.active{:href => "/main"} Logout
+      = link_to "logout", "/main", class: "btn btn-light btn-sm"

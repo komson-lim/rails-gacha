@@ -1,0 +1,19 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title RailsGacha
+    %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
+    = csrf_meta_tags
+    = csp_meta_tag
+    %link{href: "https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/css/bootstrap.min.css", rel: "stylesheet", integrity: "sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF", crossorigin: "anonymous"}
+    %script{src: "https://cdn.jsdelivr.net/npm/bootstrap@5.1.2/dist/js/bootstrap.bundle.min.js", integrity: "sha384-kQtW33rZJAHjgefvhyyzcGF3C5TFyBQBA13V1RKPf4uH+bwyzQxZ6CmMZHmNBEfJ", crossorigin: "anonymous"}
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', 'data-turbolinks-track': 'reload'
+    %script{src: "https://code.jquery.com/jquery-3.6.0.min.js", integrity: "sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=", crossorigin: "anonymous" }
+    %link{:href => "https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.css", :rel => "stylesheet", :type => "text/css"}/
+    %script{:src => "https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.js", :type => "text/javascript"}
+  %body
+    - unless current_page?("/main") || current_page?("/register") || (action_name == "create_user")
+      = render '/layouts/navbar'
+    = yield

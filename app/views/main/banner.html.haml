@@ -1,0 +1,5 @@
+%h1 Banner
+%ul
+- @banners.each do |banner|
+    %li{id: "#{banner.id}"}
+        %a{href: "/banners/#{banner.id}"}= banner.name
