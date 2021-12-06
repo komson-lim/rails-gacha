@@ -16,4 +16,7 @@ class User < ApplicationRecord
             return false
         end
     end
+    def getInventory
+        Item.joins(:inventories).where("inventories.user_id = #{self.id}").select("items.id,items.name,items.rarity,inventories.id as iid")
+    end
 end

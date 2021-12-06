@@ -31,16 +31,12 @@ class MainController < ApplicationController
         end
         # if @user.save
     end
-    def feed
-        if isLogin
-            @user = User.find(session[:user_id])
-        end
-    end
     def banner
         @banners = Banner.all
+        
     end
     def roll
-        banner_id = 2
+        banner_id = params[:banner_id]
         banner = Banner.find(banner_id)
         rate = banner.getRate()
         total_rate = rate.deep_dup()
@@ -57,7 +53,25 @@ class MainController < ApplicationController
                 break
             end
         end
-        Item.find(win)
+        puts win
+        Inventory.create(user_id: session[:user_id], item_id: win, status: "notsell", price: 0)
+        u = User.find(session[:user_id])
+        u.credit += 100
+        u.save
+        i = Item.find(win)
+        render json: {name: i.name, rarity: i.rarity, credit: u.credit}
+    end
+    def inventory
+        @inventories = User.find(session[:user_id]).getInventory
+    end
+    def sellItem
+        inv_id = params[:item_id]
+        user_id = session[:user_id]
+        inv = Inventory.find(inv_id)
+        inv.status = "sell"
+        inv.save
+        puts "#{inv_id}, #{user_id}"
+        return render json: {status: "sell"}
     end
 
     private

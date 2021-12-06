@@ -6,8 +6,18 @@
     %h2 Items
     %ul
       - @banner.getItem.each do |item|
-        %li= "name: #{item.name} rate: #{item.rate} rarity: #{item.rarity}"
-
+        %li= "name: #{item.name} rate: #{item.rate} rarity: #{item.rarity}"    
+    = button_to 'Roll', "/roll", params: {banner_id: @banner.id}, class: "btn btn-primary",id: "roll", remote: true
 = link_to 'Edit', edit_banner_path(@banner)
 \|
 = link_to 'Back', banners_path
+
+:javascript  
+  document.body.addEventListener("ajax:success", (event) => {
+    const [data, status, xhr] = event.detail;
+    document.querySelector('#navbarNav > ul').attributes['data-credit'].textContent = data.credit
+    var text = document.querySelector('#navbarNav > ul').attributes['data-credit'].textContent
+    document.querySelector('#credit').innerHTML = `credit: ${text}`
+    alert(`Name: ${data.name} Rarity: ${data.rarity}`)
+  });
+

@@ -4,11 +4,19 @@
     %button.navbar-toggler{"aria-controls" => "navbarNav", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarNav", "data-bs-toggle" => "collapse", :type => "button"}
       %span.navbar-toggler-icon
     #navbarNav.collapse.navbar-collapse
-      %ul.navbar-nav.me-auto.mb-2.mb-lg-0
+      %ul.navbar-nav.me-auto.mb-2.mb-lg-0{"data-credit": "#{User.find(session[:user_id]).credit}"}
         %li.nav-item
           %a.nav-link.active{:href => "/banner"} banner
         %li.nav-item
           %a.nav-link.active{:href => "/users"} user
+        %li.nav-item
+          %a.nav-link.active{:href => "/inventory"} inventory
         -# %li.nav-item
         -#   %a.nav-link.active{:href => "/main"} Logout
+      %p.mb-0{id: 'credit'}
+      -# = "credit: #{User.find(session[:user_id]).credit}"
       = link_to "logout", "/main", class: "btn btn-light btn-sm"
+
+:javascript
+  var text = document.querySelector('#navbarNav > ul').attributes['data-credit'].textContent
+  document.querySelector('#credit').innerHTML = `credit: ${text}`

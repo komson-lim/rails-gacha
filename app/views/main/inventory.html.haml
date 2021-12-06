@@ -1,0 +1,31 @@
+.container
+    %h1 Inventory
+    %table.table{id: "inv"}
+        %thead
+            %tr
+                %th #
+                %th Name
+                %th Rarity
+                %th
+        %tbody
+            - @inventories.each_with_index do |inv, idx|
+                %tr
+                    %th{scope: "row"}= idx+1
+                    %td=inv.name
+                    %td=inv.rarity
+                    %td{id: "item-id-#{inv.iid}"}= button_to "sell", "/sellItem", class: "btn btn-primary status", params: {item_id: inv.iid}, remote: true
+
+
+:javascript
+    $('#inv').DataTable();
+    document.querySelector("#item-id-1").addEventListener("ajax:success", (event) => {
+        const [data,status,xhr] = event.detail
+        console.log(data)
+    })
+    document.querySelectorAll(".status").forEach(e =>{
+        console.log(e)
+        e.addEventListener("ajax:success", (event) => {
+            const [data,status,xhr] = event.detail
+            console.log(data)
+        })
+    })
