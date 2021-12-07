@@ -68,7 +68,7 @@ class MainController < ApplicationController
         inv_id = params[:item_id]
         user_id = session[:user_id]
         inv = Inventory.find(inv_id)
-        inv.status = "sell"
+        inv.status = inv.status=="sell" ? "unsell" : "sell"
         inv.save
         puts "#{inv_id}, #{user_id}"
         return render json: {status: "sell"}
