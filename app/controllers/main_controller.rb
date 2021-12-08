@@ -54,7 +54,7 @@ class MainController < ApplicationController
             end
         end
         puts win
-        Inventory.create(user_id: session[:user_id], item_id: win, status: "notsell", price: 0)
+        Inventory.create(user_id: session[:user_id], item_id: win, status: "unsell", price: 0)
         u = User.find(session[:user_id])
         u.credit += 100
         u.save
@@ -63,15 +63,17 @@ class MainController < ApplicationController
     end
     def inventory
         @inventories = User.find(session[:user_id]).getInventory
+        @send_inv = Inventory.new
     end
     def sellItem
         inv_id = params[:item_id]
         user_id = session[:user_id]
         inv = Inventory.find(inv_id)
         inv.status = inv.status=="sell" ? "unsell" : "sell"
+        inv.price = inv.status=="sell" ? params[:price].to_i : 0
         inv.save
         puts "#{inv_id}, #{user_id}"
-        return render json: {status: "sell"}
+        return render json: {status: "sell", price: params[:price].to_i}
     end
 
     private

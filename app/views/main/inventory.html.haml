@@ -6,6 +6,7 @@
         %th #
         %th Name
         %th Rarity
+        %th Price
         %th
     %tbody
       - @inventories.each_with_index do |inv, idx|
@@ -13,6 +14,7 @@
           %th{scope: "row"}= idx+1
           %td=inv.name
           %td=inv.rarity
+          %td{id: "price-id-#{inv.iid}"}=inv.price
           %td{id: "item-id-#{inv.iid}", class: "status","data-status": inv.status == "sell" ? "unsell" : "sell"}
             - if (inv.status == "sell")
               = button_to "unsell", "/sellItem", class: "btn btn-primary", params: {item_id: inv.iid}, remote: true
@@ -25,11 +27,16 @@
       .modal-header
         %h5#modalTitle.modal-title Sell
         %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "modal", :type => "button"}
-      .modal-body
-        %ul{id: "modal-list"}
-      .modal-footer
-        = button_to "sell", "/sellItem", class: "btn btn-primary", params: {item_id: 1}, remote: true, id: "sellButton", "data-item": 1
-        %button.btn.btn-secondary{"data-bs-dismiss" => "modal", :type => "button"} Close
+      =form_with url: "/sellItem", local: false do |f|
+        .modal-body
+          %ul{id: "modal-list"}
+            = f.number_field :price
+            = f.hidden_field :item_id, value: 1
+        .modal-footer
+          -# =f.button :submit
+          %button.btn.btn-primary{type: "submit", id: "sellButton"} Submit
+          -# = button_to "sell", "/sellItem", class: "btn btn-primary", params: {item_id: 1}, remote: true, id: "sellButton", "data-item": 1
+          %button.btn.btn-secondary{"data-bs-dismiss" => "modal", :type => "button"} Close
 
 :javascript
   var observer = new MutationObserver(function(mutations) {
@@ -38,10 +45,11 @@
       console.log("attributes changed")
       var btn = mutation.target.childNodes[1].childNodes[0]
       btn.value = mutation.target.getAttribute("data-status")
+      console.log(btn.value)
       if (mutation.target.getAttribute("data-status") === "sell"){
-        btn.type = "submit"
-      }else{
         btn.type = "button"
+      }else{
+        btn.type = "submit"
       }
     }
     });
@@ -51,6 +59,8 @@
     document.querySelectorAll(".status").forEach(e =>{
     e.addEventListener("ajax:success", (event) => {
       const [data,status,xhr] = event.detail
+      var id = e.getAttribute('id').split("-")[2]
+      document.querySelector(`#price-id-${id}`).textContent = data['price']
     })
     var btn = e.childNodes[1].childNodes[0]
     if (e.getAttribute("data-status") === "sell"){
@@ -58,26 +68,35 @@
     }else{
       btn.type = "submit"
     }
-    btn.onclick = () => {
-      var myModal = new bootstrap.Modal(document.getElementById('sell-modal'), {});
+    var myModal = new bootstrap.Modal(document.getElementById('sell-modal'), {});
+    document.getElementById('sell-modal').addEventListener("ajax:success", (event) => {
+        const [data, status, xhr] = event.detail
+        var id = document.querySelector('#item_id').value
+        document.querySelector(`#price-id-${id}`).textContent = data['price']
+        myModal.hide()
+      })
+    btn.onclick = () => {   
       if (e.getAttribute("data-status") === "sell"){
         myModal.show()
         var selected = e.getAttribute("id").split("-")[2]
-        document.querySelector('#sellButton').setAttribute('data-item', selected)
-        document.querySelector('.modal-footer > .button_to').childNodes[2].value = selected
+        // document.querySelector('#sellButton').setAttribute('data-item', selected)
+        document.querySelector("#item_id").value = selected
+        // document.querySelector('.modal-footer > .button_to').childNodes[2].value = selected
       } else{
         e.setAttribute("data-status", "sell")
+        e.childNodes[1].requestSubmit()
       }
     }
-    observer.observe(e,{
+  var sellButton = document.querySelector('#sellButton')
+  sellButton.onclick = () =>{
+    // console.log(sellButton.getAttribute('data-item'))
+    console.log("KSDLJFLJDKFLJDLFJLKDFJLF")
+    document.querySelector(`#item-id-${document.querySelector("#item_id").value}`).setAttribute("data-status", "unsell")
+  }
+  observer.observe(e,{
       attributes: true
     })
   })
-  }
-  var sellButton = document.querySelector('#sellButton')
-  sellButton.onclick = () =>{
-    console.log(sellButton.getAttribute('data-item'))
-    document.querySelector(`#item-id-${sellButton.getAttribute('data-item')}`).setAttribute("data-status", "unsell")
   }
   var table = $('#inv').DataTable();
   addBtnAction()
