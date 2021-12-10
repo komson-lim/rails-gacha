@@ -1,0 +1,47 @@
+.container
+  %h1 Market
+  %table.table{id: "inv"}
+    %thead
+      %tr
+        %th #
+        %th Name
+        %th User id
+        %th Rarity
+        %th Price
+        %th Created at
+        %th
+    %tbody
+      - @inventories.each_with_index do |inv, idx|
+        %tr
+          %th{scope: "row"}= idx+1
+          %td=inv.name
+          %td=inv.user_id
+          %td=inv.rarity
+          %td{id: "price-id-#{inv.iid}"}=inv.price
+          %td=DateTime.parse(inv.updated_at.to_s).in_time_zone(7).strftime("%d/%m/%Y %H:%M:%S")
+          %td.buy
+            = button_to "buy", "/buy", class: "btn btn-primary", params: {seller: inv.user_id, item_id: inv.iid, price: inv.price}, remote: true
+
+:javascript
+  function addBtnAction(){
+    document.querySelectorAll(".buy").forEach(e => {
+      e.addEventListener("ajax:success", (event) => {
+        const [data,status,xhr] = event.detail
+        if (data["success"]){
+          document.querySelector('#credit').innerHTML = `credit: ${data["credit"]}`
+          var table = $('#inv').DataTable();
+          table.row(e).remove().draw()
+        }else{
+          alert("Not enough credit")
+        }
+      })
+    })
+  }
+  var table = $('#inv').DataTable();
+  addBtnAction()
+  $('#inv').on('page.dt', function () {
+    var info = table.page.info();
+    addBtnAction()
+    setTimeout(addBtnAction, 5)
+    console.log('Showing page: '+info.page+' of '+info.pages);
+  } );

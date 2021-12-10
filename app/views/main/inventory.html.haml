@@ -7,6 +7,7 @@
         %th Name
         %th Rarity
         %th Price
+        %th Obtain at
         %th
     %tbody
       - @inventories.each_with_index do |inv, idx|
@@ -15,6 +16,7 @@
           %td=inv.name
           %td=inv.rarity
           %td{id: "price-id-#{inv.iid}"}=inv.price
+          %td=DateTime.parse(inv.created_at.to_s).in_time_zone(7).strftime("%d/%m/%Y %H:%M:%S")
           %td{id: "item-id-#{inv.iid}", class: "status","data-status": inv.status == "sell" ? "unsell" : "sell"}
             - if (inv.status == "sell")
               = button_to "unsell", "/sellItem", class: "btn btn-primary", params: {item_id: inv.iid}, remote: true
@@ -26,7 +28,7 @@
     .modal-content
       .modal-header
         %h5#modalTitle.modal-title Sell
-        %button.btn-close{"aria-label" => "Close", "data-bs-dismiss" => "modal", :type => "button"}
+        %button.btn-close.close-modal{"aria-label" => "Close", "data-bs-dismiss" => "modal", :type => "button"}
       =form_with url: "/sellItem", local: false do |f|
         .modal-body
           %ul{id: "modal-list"}
@@ -36,7 +38,7 @@
           -# =f.button :submit
           %button.btn.btn-primary{type: "submit", id: "sellButton"} Submit
           -# = button_to "sell", "/sellItem", class: "btn btn-primary", params: {item_id: 1}, remote: true, id: "sellButton", "data-item": 1
-          %button.btn.btn-secondary{"data-bs-dismiss" => "modal", :type => "button"} Close
+          %button.btn.btn-secondary.close-modal{"data-bs-dismiss" => "modal", :type => "button"} Close
 
 :javascript
   var observer = new MutationObserver(function(mutations) {
@@ -100,7 +102,7 @@
   }
   var table = $('#inv').DataTable();
   addBtnAction()
-  
+
   
   $('#inv').on('page.dt', function () {
     var info = table.page.info();

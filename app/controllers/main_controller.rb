@@ -75,6 +75,29 @@ class MainController < ApplicationController
         puts "#{inv_id}, #{user_id}"
         return render json: {status: "sell", price: params[:price].to_i}
     end
+    def market
+        @inventories = Inventory.getSell
+    end
+    def buy
+        buyer = User.find(session[:user_id])
+        seller = User.find(params[:seller])
+        item = Inventory.find(params[:item_id])
+        price = params[:price].to_i
+        if (buyer.credit < price)
+            return render json: {success: false}
+        else
+            item.user_id = buyer.id
+            item.created_at = DateTime.now
+            item.status = "unsell"
+            item.price = 0
+            item.save
+            seller.credit += price
+            buyer.credit -= price
+            buyer.save
+            seller.save
+            return render json: {success: true, credit: buyer.credit}
+        end
+    end
 
     private
         def user_params
