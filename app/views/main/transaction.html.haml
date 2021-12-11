@@ -1,0 +1,23 @@
+.container
+  %h1 Transaction
+  %table.table{id: "inv"}
+    %thead
+      %tr
+        %th #
+        %th Buyer
+        %th Seller
+        %th Item
+        %th Price
+        %th Obtain at
+    %tbody
+      - @transactions.each_with_index do |t, idx|
+        %tr
+          %th{scope: "row"}= idx+1
+          %td= t.buyer_name
+          %td= t.seller_name
+          %td= t.item_name
+          %td= t.amount
+          %td= t.created_at.in_time_zone(7).strftime("%d/%m/%Y %H:%M:%S")
+:javascript
+  var table = $('#inv').DataTable();
+            

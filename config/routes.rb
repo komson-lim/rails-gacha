@@ -12,5 +12,8 @@ Rails.application.routes.draw do
   post 'sellItem', to: 'main#sellItem'
   get 'market', to: 'main#market'
   post 'buy', to: 'main#buy'
+  get 'transaction', to: 'main#transaction'
+  post 'like', to: 'main#like'
+  post 'unlike', to: 'main#unlike'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

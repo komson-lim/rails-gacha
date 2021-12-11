@@ -1,6 +1,6 @@
 %nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb-4
   .container-fluid
-    %a.navbar-brand{:href => "/banner"} microTwit
+    %a.navbar-brand{:href => "/banner"} Gacha
     %button.navbar-toggler{"aria-controls" => "navbarNav", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#navbarNav", "data-bs-toggle" => "collapse", :type => "button"}
       %span.navbar-toggler-icon
     #navbarNav.collapse.navbar-collapse
@@ -8,11 +8,11 @@
         %li.nav-item
           %a.nav-link.active{:href => "/banner"} banner
         %li.nav-item
-          %a.nav-link.active{:href => "/users"} user
-        %li.nav-item
           %a.nav-link.active{:href => "/inventory"} inventory
         %li.nav-item
           %a.nav-link.active{:href => "/market"} market
+        %li.nav-item
+          %a.nav-link.active{:href => "/transaction"} transaction
         -# %li.nav-item
         -#   %a.nav-link.active{:href => "/main"} Logout
       %p.mb-0{id: 'credit'}

@@ -32,8 +32,8 @@ class MainController < ApplicationController
         # if @user.save
     end
     def banner
-        @banners = Banner.all
-        
+        @banners = Banner.all           
+
     end
     def roll
         banner_id = params[:banner_id]
@@ -56,7 +56,7 @@ class MainController < ApplicationController
         puts win
         Inventory.create(user_id: session[:user_id], item_id: win, status: "unsell", price: 0)
         u = User.find(session[:user_id])
-        u.credit += 100
+        u.credit += banner.price
         u.save
         i = Item.find(win)
         render json: {name: i.name, rarity: i.rarity, credit: u.credit}
@@ -95,8 +95,22 @@ class MainController < ApplicationController
             buyer.credit -= price
             buyer.save
             seller.save
+            Transaction.create(buyer_id: buyer.id, seller_id: seller.id, amount: price, item_id: item.item_id)
             return render json: {success: true, credit: buyer.credit}
         end
+    end
+    def transaction
+        @transactions = User.find(session[:user_id]).getTransaction
+    end
+    def like
+        Like.create(user_id: session[:user_id], banner_id: params[:banner_id])
+        redirect_to "/banner"
+
+    end
+    def unlike
+        l = Like.find_by(user_id: session[:user_id], banner_id: params[:banner_id])
+        Like.destroy(l.id)
+        redirect_to "/banner"
     end
 
     private

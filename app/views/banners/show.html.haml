@@ -8,9 +8,7 @@
       - @banner.getItem.each do |item|
         %li= "name: #{item.name} rate: #{item.rate} rarity: #{item.rarity}"    
     = button_to 'Roll', "/roll", params: {banner_id: @banner.id}, class: "btn btn-primary",id: "roll", remote: true
-= link_to 'Edit', edit_banner_path(@banner)
-\|
-= link_to 'Back', banners_path
+  = link_to 'Back', "/banner"
 
 :javascript  
   document.body.addEventListener("ajax:success", (event) => {

@@ -1,5 +1,17 @@
-%h1 Banner
-%ul
-- @banners.each do |banner|
-    %li{id: "#{banner.id}"}
-        %a{href: "/banners/#{banner.id}"}= banner.name
+.container
+	%h1 Banner
+	%ul
+	- @banners.each do |banner|
+		-# %li{id: "#{banner.id}"}
+		-#     %a{href: "/banners/#{banner.id}"}= banner.name
+		.container.justify-content-center.border.rounded.my-2.py-4.px-5
+			%a.fs-2{href: "/banners/#{banner.id}"}= banner.name
+			%br
+			="| "
+			- banner.getItem.each do |item|
+				= "#{item.rarity} stars - #{item.name} #{(item.rate*100).to_s}% | "
+			- if(banner.isLike(session[:user_id]))
+				=button_to "Unlike", "/unlike", class:"btn btn-primary mt-2", params: {banner_id: banner.id}
+			- else
+				=button_to "Like", "/like", class:"btn btn-primary mt-2", params: {banner_id: banner.id}
+
