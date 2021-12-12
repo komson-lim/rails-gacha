@@ -1,21 +1,48 @@
 %p#notice= notice
 .container
   %p
-    %b Name:
-    = @banner.name
+    %h1= @banner.name
+    %hr
     %h2 Items
     %ul
       - @banner.getItem.each do |item|
-        %li= "name: #{item.name} rate: #{item.rate} rarity: #{item.rarity}"    
-    = button_to 'Roll', "/roll", params: {banner_id: @banner.id}, class: "btn btn-primary",id: "roll", remote: true
+        %li= "name: #{item.name} rarity: #{item.rarity} rate: #{item.rate * 100}% "    
+    = button_to "1 Roll for #{@banner.price} credit", "/roll", params: {banner_id: @banner.id}, class: "btn btn-primary roll mt-3", remote: true
+    = button_to "10 Roll for #{@banner.price * 10} credit", "/roll10", params: {banner_id: @banner.id}, class: "btn btn-primary roll mt-3", remote: true
   = link_to 'Back', "/banner"
+  
+.modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalTitle", :tabindex => "-1", id: "roll-modal", "data-roll": ""}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h5#modalTitle.modal-title Sell
+        %button.btn-close.close-modal{"aria-label" => "Close", "data-bs-dismiss" => "modal", :type => "button"}
+      .modal-body
+        %ul{id: "roll-body"}
+      .modal-footer
+        %button.btn.btn-secondary.close-modal{"data-bs-dismiss" => "modal", :type => "button"} Close
 
-:javascript  
+
+:javascript 
+  var myModal = new bootstrap.Modal(document.getElementById('roll-modal'), {}); 
   document.body.addEventListener("ajax:success", (event) => {
     const [data, status, xhr] = event.detail;
-    document.querySelector('#navbarNav > ul').attributes['data-credit'].textContent = data.credit
-    var text = document.querySelector('#navbarNav > ul').attributes['data-credit'].textContent
-    document.querySelector('#credit').innerHTML = `credit: ${text}`
-    alert(`Name: ${data.name} Rarity: ${data.rarity}`)
+    console.log(data.success)
+    if (data.success === true){
+      document.querySelector('#navbarNav > ul').attributes['data-credit'].textContent = data.credit
+      var text = document.querySelector('#navbarNav > ul').attributes['data-credit'].textContent
+      document.querySelector('#credit').innerHTML = `credit: ${text}`
+      document.querySelector('.modal-title').innerHTML = "You've got"
+      document.querySelector('#roll-body').innerHTML = ''
+      data.result.forEach(e => {
+        document.querySelector('#roll-body').innerHTML += (`<li> Name: ${e.name} Rarity: ${e.rarity} </li>`)
+      })
+    } else{
+      document.querySelector('.modal-title').innerHTML = "Failed to roll this banner"
+      document.querySelector('#roll-body').innerHTML = `Reason: ${data.reason}`
+    }
+    myModal.show()
   });
-
+  
+  rollBtn = document.querySelector(".roll")
+  rollBtn.onclick = () => {myModal.show()}

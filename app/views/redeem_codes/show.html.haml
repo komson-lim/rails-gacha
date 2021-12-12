@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Code:
+  = @redeem_code.code
+%p
+  %b Amount:
+  = @redeem_code.amount
+%p
+  %b Status:
+  = @redeem_code.status
+
+= link_to 'Edit', edit_redeem_code_path(@redeem_code)
+\|
+= link_to 'Back', redeem_codes_path

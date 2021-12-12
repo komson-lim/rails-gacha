@@ -22,4 +22,7 @@ class User < ApplicationRecord
     def getTransaction
         Transaction.joins("INNER JOIN users on transactions.buyer_id = users.id INNER JOIN users u on transactions.seller_id = u.id INNER JOIN items ON items.id = transactions.item_id").where("buyer_id = #{self.id} OR seller_id = #{self.id}").select("users.username as buyer_name, u.username as seller_name, transactions.created_at, transactions.amount, items.name as item_name").order("transactions.created_at DESC")
     end
+    def getLikeBanner
+        Banner.joins("INNER JOIN likes ON banners.id = likes.banner_id").where("likes.user_id = #{self.id}")
+    end
 end

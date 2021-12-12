@@ -27,13 +27,25 @@
     document.querySelectorAll(".buy").forEach(e => {
       e.addEventListener("ajax:success", (event) => {
         const [data,status,xhr] = event.detail
+        let div = document.createElement("div")
+        div.classList.add("alert")
+        div.classList.add("show")
+        div.classList.add("fade")
+        div.setAttribute("role", "alert")
         if (data["success"]){
+          div.classList.add("alert-success")
+          div.innerHTML = `Bought item successfully!`
           document.querySelector('#credit').innerHTML = `credit: ${data["credit"]}`
           var table = $('#inv').DataTable();
           table.row(e).remove().draw()
         }else{
-          alert("Not enough credit")
+          console.log("SJKDLFJLSDJF")
+          div.classList.add("alert-danger")
+          div.innerHTML = `Not enough credit :(`
         }
+        document.querySelector(".container").prepend(div)
+        var alert = $('.alert')
+        setTimeout(() => {alert.alert('close')}, 3000)
       })
     })
   }

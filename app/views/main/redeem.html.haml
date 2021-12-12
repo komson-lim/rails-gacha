@@ -1,0 +1,30 @@
+.container    
+  %h1 Redeem
+  = form_with url: "/redeem", local: false do |form|
+    .row-my-3
+      .col
+        = form.text_field :code
+    .row.my-3
+      .col
+        = form.submit "Submit", class: "btn btn-primary"
+
+:javascript
+  document.body.addEventListener("ajax:success", (event) => {
+    const [data, status, xhr] = event.detail;
+    let div = document.createElement("div")
+    div.classList.add("alert")
+    div.classList.add("show")
+    div.classList.add("fade")
+    div.setAttribute("role", "alert")
+    if (data.success){
+      div.classList.add("alert-success")
+      div.innerHTML = `Redeem code successfully! You've got ${data.amount}`
+      document.querySelector('#credit').innerHTML = `credit: ${data.credit}`
+    }else{
+      div.classList.add("alert-danger")
+      div.innerHTML = `Failed to redeem the code`
+    }
+    document.querySelector(".container").prepend(div)
+    var alert = $('.alert')
+    setTimeout(() => {alert.alert('close')}, 3000)
+  })

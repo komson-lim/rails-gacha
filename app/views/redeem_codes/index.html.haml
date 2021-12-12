@@ -1,0 +1,25 @@
+%h1 Listing redeem_codes
+
+%table
+  %thead
+    %tr
+      %th Code
+      %th Amount
+      %th Status
+      %th
+      %th
+      %th
+
+  %tbody
+    - @redeem_codes.each do |redeem_code|
+      %tr
+        %td= redeem_code.code
+        %td= redeem_code.amount
+        %td= redeem_code.status
+        %td= link_to 'Show', redeem_code
+        %td= link_to 'Edit', edit_redeem_code_path(redeem_code)
+        %td= link_to 'Destroy', redeem_code, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Redeem code', new_redeem_code_path

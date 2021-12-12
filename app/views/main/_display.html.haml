@@ -1,0 +1,12 @@
+- banners.each do |banner|
+  .container.justify-content-center.border.rounded.my-2.pb-4.px-5.pt-3
+    %a.fs-2{href: "/banners/#{banner.id}"}= banner.name
+    %br
+    ="| "
+    - banner.getItem.each do |item|
+      = "#{item.rarity} stars - #{item.name} #{(item.rate*100).to_s}% | "
+    = " required: #{banner.price} credit |"
+    - if(banner.isLike(session[:user_id]))
+      =button_to "Unlike", "/unlike", class:"btn btn-primary mt-2", params: {banner_id: banner.id}
+    - else
+      =button_to "Like", "/like", class:"btn btn-primary mt-2", params: {banner_id: banner.id}

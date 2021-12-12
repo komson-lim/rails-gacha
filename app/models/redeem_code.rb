@@ -1,0 +1,2 @@
+class RedeemCode < ApplicationRecord
+end

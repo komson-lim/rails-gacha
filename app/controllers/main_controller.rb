@@ -32,85 +32,165 @@ class MainController < ApplicationController
         # if @user.save
     end
     def banner
-        @banners = Banner.all           
-
+        if isLogin
+            @banners = Banner.all    
+        end       
+    end
+    def favorite
+        if isLogin
+            @banners = User.find(session[:user_id]).getLikeBanner
+        end       
     end
     def roll
-        banner_id = params[:banner_id]
-        banner = Banner.find(banner_id)
-        rate = banner.getRate()
-        total_rate = rate.deep_dup()
-        for i in 1..rate.length-1 do
-            total_rate[i][1] = total_rate[i-1][1]+rate[i][1]
-        end
-        total_rate[rate.length-1][1] = 1
-        random = Random.new
-        rng = random.rand()
-        win = 0
-        total_rate.each do |item, rate|
-            if (rng <= rate)
-                win = item
-                break
+        if isLogin
+            banner_id = params[:banner_id]
+            banner = Banner.find(banner_id)
+            u = User.find(session[:user_id])
+            if (banner.price <= u.credit)
+                rate = banner.getRate()
+                total_rate = rate.deep_dup()
+                for i in 1..rate.length-1 do
+                    total_rate[i][1] = total_rate[i-1][1]+rate[i][1]
+                end
+                total_rate[rate.length-1][1] = 1
+                random = Random.new
+                rng = random.rand()
+                win = 0
+                total_rate.each do |item, rate|
+                    if (rng <= rate)
+                        win = item
+                        break
+                    end
+                end
+                puts win
+                Inventory.create(user_id: session[:user_id], item_id: win, status: "unsell", price: 0)
+                u.credit -= banner.price
+                u.save
+                i = Item.find(win)
+                # render json: {success: true, name: i.name, rarity: i.rarity, credit: u.credit}
+                render json: {success: true, result: [{name: i.name, rarity: i.rarity}], credit: u.credit}
+            else
+                render json: {success: false, reason: "Not have enough credit"}
             end
         end
-        puts win
-        Inventory.create(user_id: session[:user_id], item_id: win, status: "unsell", price: 0)
-        u = User.find(session[:user_id])
-        u.credit += banner.price
-        u.save
-        i = Item.find(win)
-        render json: {name: i.name, rarity: i.rarity, credit: u.credit}
+    end
+    def roll10
+        if isLogin
+            banner_id = params[:banner_id]
+            banner = Banner.find(banner_id)
+            u = User.find(session[:user_id])
+            if (banner.price * 10 <= u.credit)
+                rate = banner.getRate()
+                total_rate = rate.deep_dup()
+                for i in 1..rate.length-1 do
+                    total_rate[i][1] = total_rate[i-1][1]+rate[i][1]
+                end
+                total_rate[rate.length-1][1] = 1
+                random = Random.new
+                win = []
+                for i in 1..10 do
+                    rng = random.rand()
+                    total_rate.each do |item, rate|
+                        if (rng <= rate)
+                            Inventory.create(user_id: session[:user_id], item_id: item, status: "unsell", price: 0)
+                            i = Item.find(item)
+                            win.push({name: i.name, rarity: i.rarity})
+                            break
+                        end
+                    end
+                end
+                puts win
+                u.credit -= (banner.price * 10)
+                u.save
+                render json: {success: true, result: win, credit: u.credit}
+            else
+                render json: {success: false, reason: "Not have enough credit"}
+            end
+        end
     end
     def inventory
-        @inventories = User.find(session[:user_id]).getInventory
-        @send_inv = Inventory.new
+        if isLogin
+            @inventories = User.find(session[:user_id]).getInventory
+            @send_inv = Inventory.new
+        end
     end
     def sellItem
-        inv_id = params[:item_id]
-        user_id = session[:user_id]
-        inv = Inventory.find(inv_id)
-        inv.status = inv.status=="sell" ? "unsell" : "sell"
-        inv.price = inv.status=="sell" ? params[:price].to_i : 0
-        inv.save
-        puts "#{inv_id}, #{user_id}"
-        return render json: {status: "sell", price: params[:price].to_i}
+        if isLogin
+            inv_id = params[:item_id]
+            user_id = session[:user_id]
+            inv = Inventory.find(inv_id)
+            inv.status = inv.status=="sell" ? "unsell" : "sell"
+            inv.price = inv.status=="sell" ? params[:price].to_i : 0
+            inv.save
+            puts "#{inv_id}, #{user_id}"
+            return render json: {status: "sell", price: params[:price].to_i}
+        end
     end
     def market
-        @inventories = Inventory.getSell
+        if isLogin
+            @inventories = Inventory.getSell
+        end
     end
     def buy
-        buyer = User.find(session[:user_id])
-        seller = User.find(params[:seller])
-        item = Inventory.find(params[:item_id])
-        price = params[:price].to_i
-        if (buyer.credit < price)
-            return render json: {success: false}
-        else
-            item.user_id = buyer.id
-            item.created_at = DateTime.now
-            item.status = "unsell"
-            item.price = 0
-            item.save
-            seller.credit += price
-            buyer.credit -= price
-            buyer.save
-            seller.save
-            Transaction.create(buyer_id: buyer.id, seller_id: seller.id, amount: price, item_id: item.item_id)
-            return render json: {success: true, credit: buyer.credit}
+        if isLogin
+            buyer = User.find(session[:user_id])
+            seller = User.find(params[:seller])
+            item = Inventory.find(params[:item_id])
+            price = params[:price].to_i
+            if (buyer.credit < price)
+                return render json: {success: false}
+            else
+                item.user_id = buyer.id
+                item.created_at = DateTime.now
+                item.status = "unsell"
+                item.price = 0
+                item.save
+                seller.credit += price
+                buyer.credit -= price
+                buyer.save
+                seller.save
+                Transaction.create(buyer_id: buyer.id, seller_id: seller.id, amount: price, item_id: item.item_id)
+                return render json: {success: true, credit: buyer.credit}
+            end
         end
     end
     def transaction
-        @transactions = User.find(session[:user_id]).getTransaction
+        if isLogin
+            @transactions = User.find(session[:user_id]).getTransaction
+        end
     end
     def like
-        Like.create(user_id: session[:user_id], banner_id: params[:banner_id])
-        redirect_to "/banner"
-
+        if isLogin
+            Like.create(user_id: session[:user_id], banner_id: params[:banner_id])
+            redirect_to request.referer
+        end
     end
     def unlike
-        l = Like.find_by(user_id: session[:user_id], banner_id: params[:banner_id])
-        Like.destroy(l.id)
-        redirect_to "/banner"
+        if isLogin
+            l = Like.find_by(user_id: session[:user_id], banner_id: params[:banner_id])
+            Like.destroy(l.id)
+            redirect_to request.referer
+        end
+    end
+    def redeem_display
+        if isLogin
+            render 'redeem'
+        end
+    end
+    def redeem
+        if isLogin
+            r = RedeemCode.find_by(code: params[:code])
+            if (r != nil && r.status == "available")
+                u = User.find(session[:user_id])
+                u.credit += r.amount
+                r.status = "redeemed"
+                r.save
+                u.save
+                return render json: {success: true, credit: u.credit, amount: r.amount}
+            else
+                return render json: {success: false, reason: "Invalid code"}
+            end
+        end
     end
 
     private
