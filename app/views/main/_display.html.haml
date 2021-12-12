@@ -1,5 +1,5 @@
 - banners.each do |banner|
-  .container.justify-content-center.border.rounded.my-2.pb-4.px-5.pt-3
+  .container.justify-content-center.border.rounded.my-2.pb-4.px-5.pt-3{id: "banner-#{banner.id}"}
     %a.fs-2{href: "/banners/#{banner.id}"}= banner.name
     %br
     ="| "

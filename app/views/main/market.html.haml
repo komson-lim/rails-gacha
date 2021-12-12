@@ -19,7 +19,7 @@
           %td=inv.rarity
           %td{id: "price-id-#{inv.iid}"}=inv.price
           %td=DateTime.parse(inv.updated_at.to_s).in_time_zone(7).strftime("%d/%m/%Y %H:%M:%S")
-          %td.buy
+          %td.buy{id: "item-id-#{inv.iid}"}
             = button_to "buy", "/buy", class: "btn btn-primary", params: {seller: inv.user_id, item_id: inv.iid, price: inv.price}, remote: true
 
 :javascript

@@ -1,13 +1,14 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  user: one
-  item: one
-  status: MyString
-  price: 1
-
-two:
-  user: two
-  item: two
-  status: MyString
-  price: 1
+a:
+  user_id: 1
+  item_id: 1
+  status: "unsell"
+  price: 0
+  id: 1
+b:
+  user_id: 2
+  item_id: 2
+  status: "sell"
+  price: 10
+  id: 2

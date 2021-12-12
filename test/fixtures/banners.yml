@@ -1,7 +1,12 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  name: MyString
+aaa:
+  name: aaa
+  price: 1
+  id: 1
 
-two:
-  name: MyString
+bbb:
+  name: bbb
+  price: 2
+  id: 2
+

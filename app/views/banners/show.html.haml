@@ -7,8 +7,8 @@
     %ul
       - @banner.getItem.each do |item|
         %li= "name: #{item.name} rarity: #{item.rarity} rate: #{item.rate * 100}% "    
-    = button_to "1 Roll for #{@banner.price} credit", "/roll", params: {banner_id: @banner.id}, class: "btn btn-primary roll mt-3", remote: true
-    = button_to "10 Roll for #{@banner.price * 10} credit", "/roll10", params: {banner_id: @banner.id}, class: "btn btn-primary roll mt-3", remote: true
+    = button_to "1 Roll for #{@banner.price} credit", "/roll", params: {banner_id: @banner.id}, class: "btn btn-primary roll mt-3", remote: true, id: "roll1"
+    = button_to "10 Roll for #{@banner.price * 10} credit", "/roll10", params: {banner_id: @banner.id}, class: "btn btn-primary roll mt-3", remote: true, id: "roll10"
   = link_to 'Back', "/banner"
   
 .modal.fade{"aria-hidden" => "true", "aria-labelledby" => "modalTitle", :tabindex => "-1", id: "roll-modal", "data-roll": ""}

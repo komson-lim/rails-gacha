@@ -1,11 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  code: MyString
-  amount: 1
-  status: MyString
+rrr:
+  code: rrr
+  amount: 1000
+  status: available
+  
+ttt:
+  code: ttt
+  amount: 1000
+  status: redeemed
 
-two:
-  code: MyString
-  amount: 1
-  status: MyString
+

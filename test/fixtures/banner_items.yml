@@ -1,9 +1,21 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  banner: one
-  item: one
+qa:
+  banner_id: 1
+  item_id: 1
+  rate: 0.5
 
-two:
-  banner: two
-  item: two
+wa:
+  banner_id: 1
+  item_id: 2
+  rate: 0.5
+
+qb:
+  banner_id: 2
+  item_id: 1
+  rate: 0.5
+
+wb:
+  banner_id: 2
+  item_id: 2
+  rate: 0.5
