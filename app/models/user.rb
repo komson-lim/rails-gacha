@@ -17,7 +17,7 @@ class User < ApplicationRecord
         end
     end
     def getInventory
-        Item.joins(:inventories).where("inventories.user_id = #{self.id}").select("items.id,items.name,items.rarity,inventories.id as iid, inventories.status, inventories.price, inventories.created_at").order("inventories.created_at DESC")
+        Item.joins(:inventories).where("inventories.user_id = #{self.id}").select("items.id,items.name,items.rarity,inventories.id as iid, inventories.status, inventories.price, inventories.created_at, items.url").order("inventories.created_at DESC")
     end
     def getTransaction
         Transaction.joins("INNER JOIN users on transactions.buyer_id = users.id INNER JOIN users u on transactions.seller_id = u.id INNER JOIN items ON items.id = transactions.item_id").where("buyer_id = #{self.id} OR seller_id = #{self.id}").select("users.username as buyer_name, u.username as seller_name, transactions.created_at, transactions.amount, items.name as item_name").order("transactions.created_at DESC")

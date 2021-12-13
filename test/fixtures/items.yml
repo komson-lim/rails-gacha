@@ -3,11 +3,11 @@
 qqq:
   name: qqq
   rarity: 1
-  url: qqq
+  url: https://image.flaticon.com/icons/png/512/67/67257.png
   id: 1
 
 www:
   name: www
   rarity: 5
-  url: www
+  url: https://image.flaticon.com/icons/png/512/108/108100.png
   id: 2

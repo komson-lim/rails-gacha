@@ -4,6 +4,7 @@
     %thead
       %tr
         %th #
+        %th 
         %th Name
         %th Rarity
         %th Price
@@ -13,6 +14,8 @@
       - @inventories.each_with_index do |inv, idx|
         %tr
           %th{scope: "row"}= idx+1
+          %th
+            %img{src: inv.url, height: "40px", width: "auto"}
           %td=inv.name
           %td=inv.rarity
           %td{id: "price-id-#{inv.iid}"}=inv.price
