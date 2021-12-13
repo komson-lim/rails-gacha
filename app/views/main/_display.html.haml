@@ -4,7 +4,7 @@
     %br
     ="| "
     - banner.getItem.each do |item|
-      = "#{item.rarity} stars - #{item.name} #{(item.rate*100).to_s}% | "
+      = "#{"⭐" * item.rarity.to_i} #{item.name} #{(item.rate*100).to_s}% | "
     = " required: #{banner.price} credit |"
     - if(banner.isLike(session[:user_id]))
       =button_to "Unlike", "/unlike", class:"btn btn-primary mt-2", params: {banner_id: banner.id}

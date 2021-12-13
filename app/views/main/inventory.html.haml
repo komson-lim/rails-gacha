@@ -35,7 +35,7 @@
       =form_with url: "/sellItem", local: false do |f|
         .modal-body
           %ul{id: "modal-list"}
-            = f.number_field :price
+            = f.number_field :price , onkeyup: "if(this.value<0){this.value= this.value * -1}"
             = f.hidden_field :item_id, value: 1
         .modal-footer
           -# =f.button :submit
