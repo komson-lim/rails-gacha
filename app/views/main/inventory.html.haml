@@ -31,7 +31,7 @@
     .modal-content
       .modal-header
         %h5#modalTitle.modal-title Sell
-        %button.btn-close.close-modal{"aria-label" => "Close", "data-bs-dismiss" => "modal", :type => "button"}
+        %button.btn-close.close-modal{"aria-label" => "Close", :type => "button"}
       =form_with url: "/sellItem", local: false do |f|
         .modal-body
           %ul{id: "modal-list"}
@@ -41,7 +41,7 @@
           -# =f.button :submit
           %button.btn.btn-primary{type: "submit", id: "sellButton"} Submit
           -# = button_to "sell", "/sellItem", class: "btn btn-primary", params: {item_id: 1}, remote: true, id: "sellButton", "data-item": 1
-          %button.btn.btn-secondary.close-modal{"data-bs-dismiss" => "modal", :type => "button"} Close
+          %button.btn.btn-secondary.close-modal{:type => "button"} Close
 
 :javascript
   var observer = new MutationObserver(function(mutations) {
@@ -60,7 +60,6 @@
     });
     });
   function addBtnAction(){
-    console.log("SDJfkljdfl")
     document.querySelectorAll(".status").forEach(e =>{
     e.addEventListener("ajax:success", (event) => {
       const [data,status,xhr] = event.detail
@@ -78,11 +77,11 @@
         const [data, status, xhr] = event.detail
         var id = document.querySelector('#item_id').value
         document.querySelector(`#price-id-${id}`).textContent = data['price']
-        myModal.hide()
+        $('#sell-modal').modal('toggle')
       })
     btn.onclick = () => {   
       if (e.getAttribute("data-status") === "sell"){
-        myModal.show()
+        $('#sell-modal').modal('toggle')
         var selected = e.getAttribute("id").split("-")[2]
         // document.querySelector('#sellButton').setAttribute('data-item', selected)
         document.querySelector("#item_id").value = selected
@@ -103,10 +102,12 @@
     })
   })
   }
+  document.querySelectorAll(".close-modal").forEach(c => {
+      c.onclick = () => {$('#sell-modal').modal('toggle')}
+    }) 
   var table = $('#inv').DataTable();
   addBtnAction()
-
-  
+ 
   $('#inv').on('page.dt', function () {
     var info = table.page.info();
     addBtnAction()
