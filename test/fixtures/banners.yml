@@ -10,3 +10,8 @@ bbb:
   price: 2
   id: 2
 
+ccc:
+  name: ccc
+  price: 2000000
+  id: 3
+
