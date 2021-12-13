@@ -179,8 +179,8 @@ class MainController < ApplicationController
     end
     def redeem
         if isLogin
-            r = RedeemCode.find_by(code: params[:code])
-            if (r != nil && r.status == "available")
+            r = RedeemCode.find_by(code: params[:code], status: "available")
+            if (r != nil)
                 u = User.find(session[:user_id])
                 u.credit += r.amount
                 r.status = "redeemed"
